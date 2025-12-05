@@ -19,6 +19,10 @@ bool Note::isImportant() const {
     return important;
 }
 
+std::shared_ptr<Collection> Note::getCollection() const {
+    return collection;
+}
+
 void Note::setLocked(bool newLocked) {
     locked = newLocked;
 }
@@ -39,4 +43,8 @@ bool Note::setText(const std::string &newText) {
         return false;
     text = newText;
     return true;
+}
+
+void Note::setCollection(const std::shared_ptr<Collection>& newCollection) {
+    collection = newCollection;
 }
