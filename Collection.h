@@ -18,6 +18,8 @@ public:
     int getSize() const;
     bool addNote(const std::shared_ptr<Note>& note);
     bool removeNote(const std::shared_ptr<Note>& note);
+    void printAllImportantNotes() const;
+    void printAllNotes() const;
 
     //Subject interface
     void addObserver(Observer* o) override;
