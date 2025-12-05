@@ -1,6 +1,9 @@
 #ifndef NOTE_H
 #define NOTE_H
+#include <memory>
 #include <string>
+
+#include "Collection.h"
 
 
 class Note {
@@ -13,6 +16,7 @@ public:
     std::string getText() const;
     bool isLocked() const;
     bool isImportant() const;
+    std::shared_ptr<Collection> getCollection() const;
 
     //Setter of locked and important
     void setLocked(bool newLocked);
@@ -22,9 +26,13 @@ public:
     bool setTitle(const std::string& newTitle);
     bool setText(const std::string& newText);
 
+    //Method for changing the collection of the note
+    void setCollection(const std::shared_ptr<Collection>& newCollection);
+
 private:
     std::string title;
     std::string text;
+    std::shared_ptr<Collection> collection{nullptr};
     bool locked{false};
     bool important{false};
 };
