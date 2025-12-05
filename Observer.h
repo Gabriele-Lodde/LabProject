@@ -1,8 +1,10 @@
-//
-// Created by gabriele on 12/5/25.
-//
-
 #ifndef OBSERVER_H
 #define OBSERVER_H
+
+class Observer {
+public:
+    virtual ~Observer() = default;
+    virtual void update() = 0;
+};
 
 #endif //OBSERVER_H
