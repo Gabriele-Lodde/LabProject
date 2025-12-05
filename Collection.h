@@ -8,7 +8,7 @@
 #include "Subject.h"
 
 
-class Collection : public Subject {
+class Collection : public Subject, std::enable_shared_from_this<Collection> { //Multiple inheritance because I used shared_from_this() in addNote()
 public:
     //Constructor
     explicit Collection(const std::string& n);
@@ -16,8 +16,8 @@ public:
     //Collection methods
     std::string getName() const;
     int getSize() const;
-    bool addNote(const std::shared_ptr<Note>& note);
-    bool removeNote(const std::shared_ptr<Note>& note);
+    void addNote(std::shared_ptr<Note> note);
+    void removeNote(std::shared_ptr<Note> note);
     void printAllImportantNotes() const;
     void printAllNotes() const;
 
