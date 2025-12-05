@@ -1,5 +1,7 @@
 #include "Collection.h"
 
+#include <iostream>
+
 Collection::Collection(const std::string &n) : Collection(n) {
 }
 
@@ -29,6 +31,22 @@ bool Collection::removeNote(const std::shared_ptr<Note>& note) {
     notes.erase(it);
     notifyAll();
     return true;
+}
+
+void Collection::printAllImportantNotes() const {
+    for (auto note: notes) {
+        if (note->isImportant()) {
+            std::cout<<"Note title: " << note->getTitle()<<std::endl;
+            std::cout<<"Note text: \n" << note->getText()<<std::endl;
+        }
+    }
+}
+
+void Collection::printAllNotes() const {
+    for (auto note: notes) {
+        std::cout<<"Note title: " << note->getTitle()<<std::endl;
+        std::cout<<"Note text: \n" << note->getText()<<std::endl;
+    }
 }
 
 void Collection::addObserver(Observer *o) {
