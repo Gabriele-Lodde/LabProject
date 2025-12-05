@@ -1,6 +1,7 @@
 #include "Note.h"
 
-Note::Note(const std::string &title, const std::string &text, bool locked, bool important) : title(title), text(text), locked(locked), important(important) {}
+Note::Note(const std::string &title, const std::string &text, bool locked, bool important) : title(title), text(text), locked(locked), important(important) {
+}
 
 std::string Note::getTitle() const {
     return title;
