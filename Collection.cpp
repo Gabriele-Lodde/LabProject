@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Collection::Collection(const std::string &n) : Collection(n) {
+Collection::Collection(const std::string &n) : name(n) {
 }
 
 std::string Collection::getName() const {
