@@ -1,6 +1,8 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <vector>
+
 #include "Note.h"
 #include "Collection.h"
 
@@ -16,7 +18,8 @@ void printNoteMenu() {
     std::cout << "7. Add a note to a collection" << std::endl;
     std::cout << "8. Remove a note from a collection" << std::endl;
     std::cout << "9. Print all notes of a collection" << std::endl;
-    std::cout << "10. Print all important notes of a collection" << std::endl;
+    std::cout << "10. Print all important notes" << std::endl;
+    std::cout << "11. Print all collections" << std::endl;
     std::cout << "0. Exit" << std::endl;
     std::cout << "\033[33;40m" << std::string(60, '=') << "\033[0m\n" << std::endl;
     std::cout << "Select an option: ";
@@ -24,6 +27,8 @@ void printNoteMenu() {
 
 int main() {
     int choice;
+    std::vector<std::shared_ptr<Note>> allNotes; //vector with all notes created
+    std::vector<std::shared_ptr<Collection>> allCollections; //vector with all collections created
     do {
         printNoteMenu();
         std::cin >> choice;
