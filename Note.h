@@ -6,7 +6,7 @@
 class Note {
 public:
     //Constructor
-    Note(const std::string& title, const std::string& text, bool locked, bool important);
+    Note(const std::string& title, const std::string& text);
 
     //Getter
     std::string getTitle() const;
