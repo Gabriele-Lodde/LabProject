@@ -1,5 +1,17 @@
-//
-// Created by gabriele on 12/5/25.
-//
-
 #include "CollectionSizeObserver.h"
+
+CollectionSizeObserver::CollectionSizeObserver(Collection *collection) : collection(collection) {
+    collection->addObserver(this);
+}
+
+CollectionSizeObserver::~CollectionSizeObserver() {
+    collection->removeObserver(this);
+}
+
+void CollectionSizeObserver::update() {
+    lastSize = collection->getSize();
+}
+
+int CollectionSizeObserver::getLastSize() const {
+    return lastSize;
+}
