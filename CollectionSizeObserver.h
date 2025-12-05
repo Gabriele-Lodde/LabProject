@@ -1,14 +1,18 @@
-//
-// Created by gabriele on 12/5/25.
-//
 
 #ifndef COLLECTIONSIZEOBSERVER_H
 #define COLLECTIONSIZEOBSERVER_H
+#include "Collection.h"
+#include "Observer.h"
 
 
-
-class CollectionSizeObserver {
-
+class CollectionSizeObserver : public Observer {
+public:
+    explicit CollectionSizeObserver(Collection* collection);
+    void update() override;
+    int getLastSize() const;
+private:
+    Collection* subject;
+    int lastSize;
 };
 
 
