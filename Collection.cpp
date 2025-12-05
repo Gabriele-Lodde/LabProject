@@ -13,24 +13,36 @@ int Collection::getSize() const {
     return notes.size();
 }
 
-bool Collection::addNote(const std::shared_ptr<Note>& note) {
-    if (note != nullptr) {
-        notes.push_back(note);
-        notifyAll();
-        return true;
+void Collection::addNote(std::shared_ptr<Note> note) {
+    if (note == nullptr) {
+        //.......stampa errore
     }
-    return false;
+
+    else if (note->getCollection() != nullptr && note->getCollection() != shared_from_this()) {
+        //......stampa errore
+    }
+    else {
+        notes.push_back(note);
+        note->setCollection(this);
+        notifyAll();
+        //......stampa tutto ok
+    }
 }
 
-bool Collection::removeNote(const std::shared_ptr<Note>& note) {
+void Collection::removeNote(std::shared_ptr<Note> note) {
     auto it=std::find(notes.begin(), notes.end(), note);
-    if (it == notes.end())
-        return false;
-    if ((*it)->isLocked()) //Don't remove the note if it's locked
-        return false;
-    notes.erase(it);
-    notifyAll();
-    return true;
+    if (it == notes.end()) {
+        //.......stampa errore
+    }
+    else if ((*it)->isLocked()) { //Don't remove if it's locked
+        //...stampa errore
+    }
+    else {
+        notes.erase(it);
+        note->setCollection(nullptr);
+        notifyAll();
+        //....stampa tutto ok
+    }
 }
 
 void Collection::printAllImportantNotes() const {
