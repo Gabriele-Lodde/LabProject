@@ -17,11 +17,11 @@ public:
     bool isLocked() const;
     bool isImportant() const;
 
-    void setLocked(bool newLocked);
-    void setImportant(bool newImportant);
     void setTitle(const std::string& newTitle);
     void setText(const std::string& newText);
     void setCollectionName(const std::string& newCollectionName);
+    void setLocked(bool newLocked);
+    void setImportant(bool newImportant);
 
 private:
     std::string title;
