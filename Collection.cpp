@@ -1,8 +1,16 @@
 #include "Collection.h"
-
+#include "Note.h"
 #include <iostream>
+#include <algorithm>
+
+#include "CollectionSizeObserver.h"
 
 Collection::Collection(const std::string &n) : name(n) {
+    initObserver();
+}
+
+void Collection::initObserver() {
+    sizeObserver = std::make_unique<CollectionSizeObserver>(this);
 }
 
 std::string Collection::getName() const {
@@ -13,63 +21,86 @@ int Collection::getSize() const {
     return notes.size();
 }
 
-void Collection::addNote(std::shared_ptr<Note> note) {
+void Collection::addNote(std::shared_ptr<Note>& note) {
     if (note == nullptr) {
-        //.......stampa errore
+        std::cout << "\033[1;31m\nInvalid note.\033[0m\n\n";
     }
-
-    else if (note->getCollection() != nullptr && note->getCollection() != shared_from_this()) {
-        //......stampa errore
+    else if (!note->getCollectionName().empty() && note->getCollectionName() != name) {
+        std::cout << "\033[1;31m\nNote is already in another collection!\033[0m\n\n";
+    }
+    else if (!note->getCollectionName().empty() && note->getCollectionName() == name) {
+        std::cout << "\033[1;31m\nNote is already in this collection!\033[0m\n\n";
     }
     else {
         notes.push_back(note);
-        note->setCollection(this);
+        note->setCollectionName(name);
         notifyAll();
-        //......stampa tutto ok
+        std::cout << "\033[1;32mNote added!\033[0m\n" << std::endl;
     }
 }
 
-void Collection::removeNote(std::shared_ptr<Note> note) {
+void Collection::removeNote(std::shared_ptr<Note>& note) {
     auto it=std::find(notes.begin(), notes.end(), note);
     if (it == notes.end()) {
-        //.......stampa errore
+        std::cout << "\033[1;31m\nNote not found in this collection!\033[0m\n\n";
     }
-    else if ((*it)->isLocked()) { //Don't remove if it's locked
-        //...stampa errore
+    else if ((*it)->isLocked()) {
+        std::cout << "\033[1;31m\nUnable to remove: note is locked!\033[0m\n\n";
     }
     else {
         notes.erase(it);
-        note->setCollection(nullptr);
+        note->setCollectionName("");
         notifyAll();
-        //....stampa tutto ok
+        std::cout << "\033[1;32mNote removed!\033[0m\n" << std::endl;
     }
 }
 
-void Collection::printAllImportantNotes() const {
-    for (auto note: notes) {
+bool Collection::printAllImportantNotes() const {
+    bool foundImportant = false;
+    int i=1;
+    for (const auto& note: notes) {
         if (note->isImportant()) {
-            std::cout<<"Note title: " << note->getTitle()<<std::endl;
-            std::cout<<"Note text: \n" << note->getText()<<std::endl;
+            std::cout << i << ". Note title: " << note->getTitle()
+                  << (note->isLocked() ? " [LOCKED]" : "")
+                  << (note->isImportant() ? " [IMPORTANT]" : "")
+                  << "\n";
+            std::cout << "   Note text: " << note->getText() << "\n" << std::endl;
+            foundImportant = true;
         }
     }
+    return foundImportant;
 }
 
 void Collection::printAllNotes() const {
-    for (auto note: notes) {
-        std::cout<<"Note title: " << note->getTitle()<<std::endl;
-        std::cout<<"Note text: \n" << note->getText()<<std::endl;
+    int i=1;
+    for (const auto&  note : notes) {
+        std::cout << i << ". Note title: " << note->getTitle()
+                  << (note->isLocked() ? " [LOCKED]" : "")
+                  << (note->isImportant() ? " [IMPORTANT]" : "")
+                  << "\n";
+        std::cout << "   Note text: " << note->getText() << "\n" << std::endl;
+        i++;
     }
 }
 
-void Collection::addObserver(Observer *o) {
+std::shared_ptr<Note> Collection::getNoteAt(int index) const {
+    if (index < 1 || index > notes.size())
+        return nullptr;
+    auto it = notes.begin();
+    std::advance(it, index-1);
+    return *it;
+}
+
+void Collection::addObserver(Observer* o) {
     observers.push_back(o);
 }
 
-void Collection::removeObserver(Observer *o) {
+void Collection::removeObserver(Observer* o) {
     observers.remove(o);
 }
 
 void Collection::notifyAll() {
-    for (auto observer: observers)
+    for (auto observer: observers) {
         observer->update();
+    }
 }
