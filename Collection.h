@@ -1,14 +1,13 @@
 #ifndef COLLECTION_H
 #define COLLECTION_H
 #include <memory>
-#include <algorithm>
 #include <string>
 
-#include "Note.h"
+class Note;
 #include "Subject.h"
 
 
-class Collection : public Subject, std::enable_shared_from_this<Collection> { //Multiple inheritance because I used shared_from_this() in addNote()
+class Collection : public Subject {
 public:
     //Constructor
     explicit Collection(const std::string& n);
@@ -16,10 +15,11 @@ public:
     //Collection methods
     std::string getName() const;
     int getSize() const;
-    void addNote(std::shared_ptr<Note> note);
-    void removeNote(std::shared_ptr<Note> note);
-    void printAllImportantNotes() const;
+    void addNote(std::shared_ptr<Note>& note);
+    void removeNote(std::shared_ptr<Note>& note);
+    bool printAllImportantNotes() const;
     void printAllNotes() const;
+    std::shared_ptr<Note> getNoteAt(int index) const;
 
     //Subject interface
     void addObserver(Observer* o) override;
@@ -27,8 +27,10 @@ public:
     void notifyAll() override;
 
 private:
+    void initObserver();
     std::string name;
     std::list<std::shared_ptr<Note>> notes;
+    std::unique_ptr<Observer> sizeObserver;
 };
 
 
