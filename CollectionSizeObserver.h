@@ -8,12 +8,10 @@
 class CollectionSizeObserver : public Observer {
 public:
     explicit CollectionSizeObserver(Collection* collection);
-    ~CollectionSizeObserver();
     void update() override;
-    int getLastSize() const;
 private:
     Collection* collection;
-    int lastSize;
+    int lastSize{0};
 };
 
 
