@@ -11,6 +11,10 @@ std::string Note::getText() const {
     return text;
 }
 
+std::string Note::getCollectionName() const {
+    return collectionName;
+}
+
 bool Note::isLocked() const {
     return locked;
 }
@@ -19,8 +23,16 @@ bool Note::isImportant() const {
     return important;
 }
 
-std::shared_ptr<Collection> Note::getCollection() const {
-    return collection;
+void Note::setTitle(const std::string &newTitle) {
+    title = newTitle;
+}
+
+void Note::setText(const std::string &newText) {
+    text = newText;
+}
+
+void Note::setCollectionName(const std::string &newCollectionName) {
+    collectionName = newCollectionName;
 }
 
 void Note::setLocked(bool newLocked) {
@@ -29,22 +41,4 @@ void Note::setLocked(bool newLocked) {
 
 void Note::setImportant(bool newImportant) {
     important = newImportant;
-}
-
-bool Note::setTitle(const std::string &newTitle) {
-    if (locked)
-        return false;
-    title = newTitle;
-    return true;
-}
-
-bool Note::setText(const std::string &newText) {
-    if (locked)
-        return false;
-    text = newText;
-    return true;
-}
-
-void Note::setCollection(const std::shared_ptr<Collection>& newCollection) {
-    collection = newCollection;
 }
