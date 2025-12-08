@@ -17,8 +17,8 @@ public:
     int getSize() const;
     void addNote(std::shared_ptr<Note>& note);
     void removeNote(std::shared_ptr<Note>& note);
-    bool printAllImportantNotes() const;
     void printAllNotes() const;
+    void printNote(const auto& note, int index) const;
     std::shared_ptr<Note> getNoteAt(int index) const;
 
     //Subject interface
@@ -32,7 +32,6 @@ private:
     std::list<std::shared_ptr<Note>> notes;
     std::unique_ptr<Observer> sizeObserver;
 };
-
 
 
 #endif //COLLECTION_H
