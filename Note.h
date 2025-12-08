@@ -16,6 +16,7 @@ public:
     std::string getCollectionName() const;
     bool isLocked() const;
     bool isImportant() const;
+    void printNote() const;
 
     void setTitle(const std::string& newTitle);
     void setText(const std::string& newText);
