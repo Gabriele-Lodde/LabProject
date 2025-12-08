@@ -22,10 +22,19 @@ void printNoteMenu() {
     std::cout << "\033[1;32m9\033[0m. Print all notes in a collection\n";
     std::cout << "\033[1;32m10\033[0m. Print all important notes\n";
     std::cout << "\033[1;32m11\033[0m. Print all collections\n";
+    std::cout << "\033[1;32m12\033[0m. Print all notes created\n";
     std::cout << "\033[1;32m0\033[0m. Exit\n\n";
 
     std::cout << "\033[1;36mSelect an option: \033[0m";
 
+}
+
+void printNotes(const std::vector<std::shared_ptr<Note>>& notes) {
+    std::cout << "\n--Notes--\n" << std::endl;
+    for (int i = 0; i < notes.size(); ++i) {
+        std::cout << i+1 << "." << std::endl;
+        notes[i]->printNote();
+    }
 }
 
 int selectNote(const std::vector<std::shared_ptr<Note>>& notes) {
@@ -33,14 +42,7 @@ int selectNote(const std::vector<std::shared_ptr<Note>>& notes) {
         std::cout << "\033[1;31m\nNo notes available!\033[0m\n" << std::endl;
         return -1;
     }
-    std::cout << "\n--Notes-- " << std::endl;
-    for (int i = 0; i < notes.size(); i++) {
-        std::cout << i+1 << "." << " Note title: " << notes[i]->getTitle()
-                  << (notes[i]->isLocked() ? "  [LOCKED]" : "")
-                  << (notes[i]->isImportant() ? " [IMPORTANT]" : "")
-                  << "\n";
-        std::cout << "   Note text: " << notes[i]->getText() << "\n" << std::endl;
-    }
+    printNotes(notes);
     std::cout << "Select note number: ";
     int index;
     if (!(std::cin >> index)) {
@@ -65,7 +67,7 @@ int selectCollection(const std::vector<std::shared_ptr<Collection>>& collections
     }
     std::cout << "\n--Collections-- " << std::endl;
     for (int i = 0; i < collections.size(); ++i) {
-        std::cout << i+1 << ". Collection name: " << collections[i]->getName() << "\n" << std::endl;
+        std::cout << i+1 << ". [COLLECTION NAME]: " << collections[i]->getName() << "\n" << std::endl;
     }
     std::cout << "\nSelect collection number: ";
     int index;
@@ -81,6 +83,14 @@ int selectCollection(const std::vector<std::shared_ptr<Collection>>& collections
         return -1;
     }
     return index-1;
+}
+
+bool checkImportantNotes(const std::vector<std::shared_ptr<Note>>& notes) {
+    for (const auto& note : notes) {
+        if (note->isImportant())
+            return true;
+    }
+    return false;
 }
 
 int main() {
@@ -102,27 +112,27 @@ int main() {
         switch (choice) {
             case 1: { //Note creation
                 std::string title, text;
-                std::cout <<"Enter title: ";
+                std::cout <<"\nEnter title: ";
                 std::getline(std::cin, title);
                 std::cout <<"Enter text: ";
                 std::getline(std::cin, text);
                 auto note = std::make_shared<Note>(title, text);
                 allNotes.push_back(note);
-                std::cout << "\033[1;32m\nNote created!\033[0m\n" << std::endl;
+                std::cout << "\033[1;32m\nNote '" << note->getTitle() << "' created!\033[0m\n" << std::endl;
                 break;
             }
             case 2: { //Collection creation
                 std::string name;
-                std::cout <<"Enter collection name: ";
+                std::cout <<"\nEnter collection name: ";
                 std::getline(std::cin, name);
                 auto collection = std::make_shared<Collection>(name);
                 allCollections.push_back(collection);
-                std::cout << "\033[1;32m\nCollection created!\033[0m\n" << std::endl;
+                std::cout << "\033[1;32m\nCollection '" << collection->getName() << "' created!\033[0m\n" << std::endl;
                 break;
             }
             case 3: { //Adding a note to a collection
                 if (allCollections.empty()) {
-                    std::cout << "\033[1;31m\nNo collections available.\033[0m\n" << std::endl;
+                    std::cout << "\033[1;31m\nNo collections created!\033[0m\n" << std::endl;
                     break;
                 }
                 int n = selectNote(allNotes);
@@ -139,11 +149,12 @@ int main() {
                 if (num_collection == -1) break;
                 const auto& coll = allCollections[num_collection];
                 if (coll->getSize() == 0) {
-                    std::cout << "\033[1;31m\nThis collection is empty!\033[0m\n" << std::endl;
+                    std::cout << "\033[1;31m\n[COLLECTION NAME]: " << coll->getName() << " is empty!\033[0m\n" << std::endl;
                     break;
                 }
+                std::cout << "\n--Notes--" << std::endl;
                 coll->printAllNotes();
-                std::cout << "Select note number to remove: ";
+                std::cout << "\nSelect note number to remove: ";
                 int index;
                 std::cin >> index;
                 if (std::cin.fail() || index < 1 || index > coll->getSize()) {
@@ -159,7 +170,7 @@ int main() {
                 if (n==-1)
                     break;
                 allNotes[n]->setLocked(!allNotes[n]->isLocked());
-                std::cout << "\033[1;32m\nLock toggled!\033[0m\n" << std::endl;
+                std::cout << "\033[1;32m\nLock flag of note '" << allNotes[n]->getTitle() << "' toggled!\033[0m\n" << std::endl;
                 break;
             }
             case 6: { //Toggle the 'important' option of a note
@@ -167,7 +178,7 @@ int main() {
                 if (n==-1)
                     break;
                 allNotes[n]->setImportant(!allNotes[n]->isImportant());
-                std::cout << "\033[1;32m\nImportant flag toggled!\033[0m\n" << std::endl;
+                std::cout << "\033[1;32m\nImportant flag of note '" << allNotes[n]->getTitle() << "' toggled!\033[0m\n" << std::endl;
                 break;
             }
             case 7: { //Changing the title of a note
@@ -175,14 +186,14 @@ int main() {
                 if (n==-1)
                     break;
                 if (allNotes[n]->isLocked()) {
-                    std::cout << "\033[1;31m\nUnable to edit title: note locked!\033[0m\n" << std::endl;
+                    std::cout << "\033[1;31m\nUnable to edit title: note '" << allNotes[n]->getTitle() << "' is locked!\033[0m\n" << std::endl;
                     break;
                 }
                 std::string newTitle;
-                std::cout <<"Enter new title: ";
+                std::cout <<"\nEnter new title: ";
                 std::getline(std::cin, newTitle);
                 allNotes[n]->setTitle(newTitle);
-                std::cout << "\033[1;32m\nTitle changed!\033[0m\n" << std::endl;
+                std::cout << "\033[1;32m\nTitle of note '" << allNotes[n]->getTitle() << "' has changed!\033[0m\n" << std::endl;
                 break;
             }
             case 8: { //Changing the text of a note
@@ -190,14 +201,14 @@ int main() {
                 if (n==-1)
                     break;
                 if (allNotes[n]->isLocked()) {
-                    std::cout << "\033[1;31m\nUnable to edit text: note locked!\033[0m\n" << std::endl;
+                    std::cout << "\033[1;31m\nUnable to edit text: note '" << allNotes[n]->getTitle() << "' is locked!\033[0m\n" << std::endl;
                     break;
                 }
                 std::string newText;
-                std::cout <<"Enter new text: ";
+                std::cout <<"\nEnter new text: ";
                 std::getline(std::cin, newText);
                 allNotes[n]->setText(newText);
-                std::cout<<"\033[1;32m\nText changed!\033[0m\n" << std::endl;
+                std::cout<<"\033[1;32m\nText of note '" << allNotes[n]->getTitle() << "' has changed!\033[0m\n" << std::endl;
                 break;
             }
             case 9: { //Print all notes in a collection
@@ -205,39 +216,54 @@ int main() {
                 if (num_collection == -1)
                     break;
                 if (allCollections[num_collection]->getSize() == 0) {
-                    std::cout << "\033[1;34m" << allCollections[num_collection]->getName() << " is empty!\033[0m\n" << std::endl;
+                    std::cout << "\033[1;34m\n[COLLECTION NAME]: '" << allCollections[num_collection]->getName() << "' is empty!\033[0m\n" << std::endl;
                     break;
                 }
-                std::cout<<"\nCollection name: "<<allCollections[num_collection]->getName() << std::endl;
+                std::cout << "\n[COLLECTION NAME]: '"<<allCollections[num_collection]->getName() << "'" << std::endl;
+                std::cout << "\n--Notes--\n" << std::endl;
                 allCollections[num_collection]->printAllNotes();
                 break;
             }
             case 10: { //Print all important notes
-                if (allCollections.empty()) {
-                    std::cout << "\033[1;31m\nNo collections available.\033[0m\n" << std::endl;
+                if (allNotes.empty()) {
+                    std::cout << "\033[1;31m\nNo notes created!\033[0m\n" << std::endl;
                     break;
                 }
-                bool foundImportant = false;
-                for (const auto& collection : allCollections) {
-                    foundImportant=collection->printAllImportantNotes();
+                if (checkImportantNotes(allNotes)) {
+                    std::cout << "\n--Important notes--\n" << std::endl;
+                    for (int i=0; i < allNotes.size(); i++) {
+                        if (allNotes[i]->isImportant()) {
+                            std::cout << i+1 << "." << std::endl;
+                            allNotes[i]->printNote();
+                        }
+                    }
                 }
-                if (!foundImportant)
-                    std::cout << "\033[1;31m\nNo important notes found in any collection.\033[0m\n" << std::endl;
+                else
+                    std::cout << "\033[1;31m\nThere are no important notes!\033[0m\n" << std::endl;
                 break;
             }
             case 11: { //Print all collections
                 if (allCollections.empty()) {
-                    std::cout << "\033[1;31m\nNo collections available!\033[0m\n" << std::endl;
+                    std::cout << "\033[1;31m\nNo collections created!\033[0m\n" << std::endl;
                     break;
                 }
+                std::cout << "\n--Collections--" << std::endl;
                 for (const auto& collection : allCollections) {
-                    std::cout<<"\nCollection name: " << collection->getName() <<std::endl;
                     if (collection->getSize() == 0)
-                        std::cout << "\033[1;34m" << collection->getName() << " is empty!\033[0m\n" << std::endl;
+                        std::cout << "\033[1;34m\n[COLLECTION NAME]: '" << collection->getName() << "' is empty!\033[0m\n" << std::endl;
                     else {
+                        std::cout<<"\n[COLLECTION NAME]: '" << collection->getName() << "'" <<std::endl;
                         collection->printAllNotes();
                     }
                 }
+                break;
+            }
+            case 12: { //Print all notes created
+                if (allNotes.empty()) {
+                    std::cout << "\033[1;31m\nNo notes created!\033[0m\n" << std::endl;
+                    break;
+                }
+                printNotes(allNotes);
                 break;
             }
             case 0:
