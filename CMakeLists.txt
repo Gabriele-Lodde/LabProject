@@ -3,8 +3,7 @@ project(Lab_Project)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Lab_Project main.cpp
-        Note.cpp
+set(SOURCE_FILES Note.cpp
         Note.h
         Collection.cpp
         Collection.h
@@ -12,3 +11,7 @@ add_executable(Lab_Project main.cpp
         Subject.h
         CollectionSizeObserver.cpp
         CollectionSizeObserver.h)
+add_executable(Lab_Project main.cpp)
+add_library(core ${SOURCE_FILES})
+target_link_libraries(Lab_Project core)
+add_subdirectory(test)
