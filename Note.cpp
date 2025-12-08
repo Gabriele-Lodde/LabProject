@@ -24,11 +24,13 @@ bool Note::isImportant() const {
 }
 
 void Note::setTitle(const std::string &newTitle) {
-    title = newTitle;
+    if (!isLocked())
+        title = newTitle;
 }
 
 void Note::setText(const std::string &newText) {
-    text = newText;
+    if (!isLocked())
+        text = newText;
 }
 
 void Note::setCollectionName(const std::string &newCollectionName) {
