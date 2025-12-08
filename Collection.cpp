@@ -26,59 +26,40 @@ void Collection::addNote(std::shared_ptr<Note>& note) {
         std::cout << "\033[1;31m\nInvalid note.\033[0m\n\n";
     }
     else if (!note->getCollectionName().empty() && note->getCollectionName() != name) {
-        std::cout << "\033[1;31m\nNote is already in another collection!\033[0m\n\n";
+        std::cout << "\033[1;31m\nNote '" << note->getTitle() << "' is already in '" << name << "' (another) collection!\033[0m\n\n";
     }
     else if (!note->getCollectionName().empty() && note->getCollectionName() == name) {
-        std::cout << "\033[1;31m\nNote is already in this collection!\033[0m\n\n";
+        std::cout << "\033[1;31m\nNote '" << note->getTitle() << "' is already in '" << name << "' (this) collection!\033[0m\n\n";
     }
     else {
         notes.push_back(note);
         note->setCollectionName(name);
         notifyAll();
-        std::cout << "\033[1;32mNote added!\033[0m\n" << std::endl;
+        std::cout << "\033[1;32mNote '" << note->getTitle() << "' added to '" << name << "' collection!\033[0m\n" << std::endl;
     }
 }
 
 void Collection::removeNote(std::shared_ptr<Note>& note) {
     auto it=std::find(notes.begin(), notes.end(), note);
     if (it == notes.end()) {
-        std::cout << "\033[1;31m\nNote not found in this collection!\033[0m\n\n";
+        std::cout << "\033[1;31m\nNote '" << note->getTitle() << "' not found in '" << name << "' collection!\033[0m\n\n";
     }
     else if ((*it)->isLocked()) {
-        std::cout << "\033[1;31m\nUnable to remove: note is locked!\033[0m\n\n";
+        std::cout << "\033[1;31m\nUnable to remove: note '" << note->getTitle() << "' is locked!\033[0m\n\n";
     }
     else {
         notes.erase(it);
         note->setCollectionName("");
         notifyAll();
-        std::cout << "\033[1;32mNote removed!\033[0m\n" << std::endl;
+        std::cout << "\033[1;32mNote '" << note->getTitle() << "' removed from '" << name << "' collection!\033[0m\n" << std::endl;
     }
-}
-
-bool Collection::printAllImportantNotes() const {
-    bool foundImportant = false;
-    int i=1;
-    for (const auto& note: notes) {
-        if (note->isImportant()) {
-            std::cout << i << ". Note title: " << note->getTitle()
-                  << (note->isLocked() ? " [LOCKED]" : "")
-                  << (note->isImportant() ? " [IMPORTANT]" : "")
-                  << "\n";
-            std::cout << "   Note text: " << note->getText() << "\n" << std::endl;
-            foundImportant = true;
-        }
-    }
-    return foundImportant;
 }
 
 void Collection::printAllNotes() const {
     int i=1;
     for (const auto&  note : notes) {
-        std::cout << i << ". Note title: " << note->getTitle()
-                  << (note->isLocked() ? " [LOCKED]" : "")
-                  << (note->isImportant() ? " [IMPORTANT]" : "")
-                  << "\n";
-        std::cout << "   Note text: " << note->getText() << "\n" << std::endl;
+        std::cout << i << "." << std::endl;
+        note->printNote();
         i++;
     }
 }
