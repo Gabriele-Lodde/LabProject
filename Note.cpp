@@ -1,5 +1,7 @@
 #include "Note.h"
 
+#include <iostream>
+
 Note::Note(const std::string &title, const std::string &text) : title(title), text(text) {
 }
 
@@ -21,6 +23,14 @@ bool Note::isLocked() const {
 
 bool Note::isImportant() const {
     return important;
+}
+
+void Note::printNote() const {
+    std::cout << "[NOTE TITLE]: " << title << std::endl;
+    std::cout << (locked ? "[LOCKED]" : "[NOT LOCKED]") << std::endl;
+    std::cout << (important ? "[IMPORTANT]" : "[NOT IMPORTANT]") << std::endl;
+    std::cout << "[NOTE'S COLLECTION]: " << (collectionName.empty() ? "empty" : collectionName) << std::endl;
+    std::cout << "[NOTE TEXT]: " << text << "\n" << std::endl;
 }
 
 void Note::setTitle(const std::string &newTitle) {
