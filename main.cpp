@@ -65,7 +65,7 @@ int selectCollection(const std::vector<std::shared_ptr<Collection>>& collections
         std::cout << "\033[1;31m\nNo collections available!\033[0m\n" << std::endl;
         return -1;
     }
-    std::cout << "\n--Collections-- " << std::endl;
+    std::cout << "\n--Collections--\n" << std::endl;
     for (int i = 0; i < collections.size(); ++i) {
         std::cout << i+1 << ". [COLLECTION NAME]: " << collections[i]->getName() << "\n" << std::endl;
     }
@@ -149,7 +149,7 @@ int main() {
                 if (num_collection == -1) break;
                 const auto& coll = allCollections[num_collection];
                 if (coll->getSize() == 0) {
-                    std::cout << "\033[1;31m\n[COLLECTION NAME]: " << coll->getName() << " is empty!\033[0m\n" << std::endl;
+                    std::cout << "\033[1;31m\n[COLLECTION NAME]: '" << coll->getName() << "' is empty!\033[0m\n" << std::endl;
                     break;
                 }
                 std::cout << "\n--Notes--" << std::endl;
@@ -230,11 +230,13 @@ int main() {
                     break;
                 }
                 if (checkImportantNotes(allNotes)) {
+                    int index_important = 1;
                     std::cout << "\n--Important notes--\n" << std::endl;
                     for (int i=0; i < allNotes.size(); i++) {
                         if (allNotes[i]->isImportant()) {
-                            std::cout << i+1 << "." << std::endl;
+                            std::cout << index_important << "." << std::endl;
                             allNotes[i]->printNote();
+                            index_important++;
                         }
                     }
                 }
@@ -253,6 +255,7 @@ int main() {
                         std::cout << "\033[1;34m\n[COLLECTION NAME]: '" << collection->getName() << "' is empty!\033[0m\n" << std::endl;
                     else {
                         std::cout<<"\n[COLLECTION NAME]: '" << collection->getName() << "'" <<std::endl;
+                        std::cout << "\n--Notes--\n" << std::endl;
                         collection->printAllNotes();
                     }
                 }
