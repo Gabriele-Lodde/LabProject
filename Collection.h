@@ -9,18 +9,15 @@ class Note;
 
 class Collection : public Subject {
 public:
-    //Constructor
     explicit Collection(const std::string& n);
 
-    //Collection methods
     std::string getName() const;
     int getSize() const;
     void addNote(std::shared_ptr<Note>& note);
     void removeNote(std::shared_ptr<Note>& note);
     void printAllNotes() const;
-    std::shared_ptr<Note> getNoteAt(int index) const;
+    std::shared_ptr<Note> getNoteAt(int index);
 
-    //Subject interface
     void addObserver(Observer* o) override;
     void removeObserver(Observer* o) override;
     void notifyAll() override;
