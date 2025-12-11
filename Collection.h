@@ -16,7 +16,7 @@ public:
     void addNote(std::shared_ptr<Note>& note);
     void removeNote(std::shared_ptr<Note>& note);
     void printAllNotes() const;
-    std::shared_ptr<Note> getNoteAt(int index);
+    std::shared_ptr<Note> getNoteAt(int index) const;
 
     void addObserver(Observer* o) override;
     void removeObserver(Observer* o) override;
