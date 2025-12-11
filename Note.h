@@ -8,7 +8,6 @@ class Collection;
 
 class Note {
 public:
-    //Constructor
     Note(const std::string& title, const std::string& text);
 
     std::string getTitle() const;
